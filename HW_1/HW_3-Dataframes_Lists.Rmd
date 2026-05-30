@@ -1,0 +1,135 @@
+---
+title: "HW 3 - Working with Data Frames and Lists"
+author: "DUE: Thursday, October 2 at 11:59pm"
+output: word_document
+---
+```{r include = FALSE}
+knitr::opts_chunk$set(comment = "")
+```
+
+# Purpose:
+
+Similar to the previous homework assignment, you will be reading in and exploring a real dataset in R. The data are provided in two alternate formats, although neither are in a .Rdata file (**doh!**). You will use new functions (and packages) to read in the data. Additionally, the codebook file will be useful to format one of the data files that you will read in.
+
+The second part of the assignment focuses on working with list objects. The intention here is to get you some practice indexing and referencing certain elements in a list. This is a process that will be similar to what you will do once we get our hands on some results from statistical analyses later in the semester.
+
+# Task:
+
+The following are the activities you will accomplish as you work through this assignment.
+
+* Read a fixed-width file into R
+* Use the codebook to format the fixed-width file
+* Read an SPSS .sav data file into R using a new package
+* Explore the data by referencing vectors
+* Reference entries in a list
+* Apply any error messages received to debug your code
+
+# Criteria for Success:
+
+This assignment is worth a total of **100 points** (10% of your overall grade). All questions are worth 10 points.
+
+Review the answers posted to the previous class exercises. Use the strategies and lessons learned during the class exercises to inform how to develop your code for this assignment.
+
+The code to answer the questions should only be 1-3 lines and your knitted Word document should not be longer than 7 pages. Additionally, make sure the output of your code answers the questions, but keep in mind that the code developed to accomplish some tasks may not need to produce any output, such as when reading in data. Therefore, pay careful attention to exactly what the question is asking for and translate that into R code.
+
+Follow the consistency guidelines and naming conventions that we went over in the Basics of R topic. There are many ways to accomplish any given task, so checking your answers is critical. Lastly, review my feedback once this assignment is graded and use it on future assignments.
+
+***
+
+# Working with Data Frames
+
+The next few questions deal with the State of the City polling data from HW 2. The raw data are in the file `state_of_the_city_poll_data.asc`, which is in a **fixed-width text** file format. The same data were also provided in an alternate format, as an SPSS .sav data file. Ensure that the data (and codebook) files are saved in the same working directory as this .Rmd file.
+
+Take a look at the raw data by opening it in a text editor. Note that there are no commas or other delimiters to indicate what numbers correspond to what variables. Also, there are no names indicating what the numbers represent. To understand what's going on with the data, you'll need to examine the file `state_of_the_city_poll_codebook.csv`. The codebook file provides variable names and the start and end position (in terms of the character number position in each line of the raw data file) for each variable.  
+
+1. Write a line of code using the `read.fwf` function to read in the **first 10 variables**.  
+HINT: Read the help file for `read.fwf`, focusing in particular on the arguments `file`, `widths`, and `col.names`.  
+
+```{r}
+# Replace this comment with your R code
+```
+
+2. Think how annoying it would be to enter in the widths and column names for every one of the variables. Read in the file which ends with `codebook.csv` and be sure to set the argument `stringsAsFactors` to `TRUE`. Check the structure of the variables.  
+
+```{r}
+# Replace this comment with your R code
+```
+
+3. Calculate a new variable in the codebook (call it `width`) that is equal to the number of characters corresponding to each variable in the dataset. Run a statistical summary of this new variable: what are the minimum, maximum, and median variable lengths?  
+
+```{r}
+# Replace this comment with your R code
+```
+
+4. Now try reading in `state_of_the_city_poll_data.asc` file again (but the entire dataset this time), still using the `read.fwf` function, by referencing the relevant information from the codebook file.  
+
+```{r}
+# Replace this comment with your R code
+```
+
+5. Use the `read.spss` function in the `foreign` package to read in the .sav file, ensuring that the result is saved as a `data.frame` object. Store it as an object with a different name than the data from the previous question. Note that the `read.spss` function will probably produce a message, but it is okay to ignore it.  
+HINT: You will need to load the `foreign` package.  
+
+```{r, warning=FALSE}
+# Replace this comment with your R code
+```
+
+6. Compare the variable names side-by-side using the functions `names` and `cbind`.  
+
+```{r}
+# Replace this comment with your R code
+```
+
+7. What is the same and what is different about the **content** of the two datasets? Write a couple of sentences to explain the differences.  
+
+**Replace this text with your response.**
+
+8. Using the data from the **SPSS file**, find the number of respondents by income level (using the `income` variable), the number of respondents by age group (using the `recage` variable), and the number of respondents by education level (using the `receduc` variable).  
+
+```{r}
+# Replace this comment with your R code
+```
+
+# Working with Lists
+
+Here is a list of the films nominated for the Best Picture Oscar from 2017 to 2023:
+```{r}
+best_pic <- list("2017" = c("Call Me by Your Name","Darkest Hour","Dunkirk",
+                            "Get Out","Lady Bird","Phantom Thread",
+                            "The Post","The Shape of Water",
+                            "Three Billboards Outside Ebbing, Missouri"),
+                 "2018" = c("Black Panther","BlacKkKlansman",
+                            "Bohemian Rhapsody","The Favourite","Green Book",
+                            "Roma","A Star Is Born","Vice"),
+                 "2019" = c("Ford v Ferrari","The Irishman","Jojo Rabbit",
+                            "Joker","Little Women","Marriage Story","1917",
+                            "Once Upon a Time in Hollywood","Parasite"),
+                 "2020" = c("Nomadland","The Father",
+                            "Mank","Minari","Sound of Metal",
+                            "The Trial of the Chicago 7",
+                            "Judas and the Black Messiah",
+                            "Promising Young Woman"),
+                 "2021" = c("CODA","Belfast", "West Side Story", "Dune",
+                            "Don't Look Up", "Drive My Car", "King Richard", 
+                            "Nightmare Alley", "The Power of the Dog", "Licorice Pizza"),
+                 "2022" = c("Triangle of Sadness", "Avatar: The Way of Water",
+                            "The Banshees of Inisherin", "Elvis",
+                            "The Fablemans", "Tár", "Top Gun: Maverick", 
+                            "Everything Everywhere All at Once", 
+                            "Women Talking", "All Quiet on the Western Front"), 
+                 "2023" = c("American Fiction","Anatomy of a Fall", "Barbie",
+                            "The Holdovers", "Killers of the Flower Moon", "Oppenheimer", 
+                            "Maestro", "Past Lives", "Poor Things", "The Zone of Interest"))
+```
+
+9. Calculate the total number of nominees in 2021 and 2022 combined.  
+
+```{r}
+# Replace this comment with your R code
+```
+
+10. Find the film (only one film title should be in the output) that would be first in an alphabetical list of all nominees from 2021 to 2023.  
+
+```{r}
+# Replace this comment with your R code
+```

@@ -1,0 +1,219 @@
+---
+title: "HW 2 - Working with Vectors"
+author: "DUE: Thursday, September 18 at 11:59pm"
+output: word_document
+---
+
+```{r include = FALSE}
+knitr::opts_chunk$set(comment = "")
+
+```
+
+# Purpose:
+
+As part of your practice of working with variables (**i.e., vectors**) in R, you will be cleaning some data. It is exceedingly rare that data are clean and ready for analysis from their original state. Codebooks, when they are available, are very useful in this process.
+
+# Task:
+
+The following are the activities you will accomplish as you work through this assignment.
+
+-   Use the codebook to identify missing value codes
+-   Recode variables in the dataset by referencing vector entries or subsets of vectors
+-   Verify that your variable recoding worked properly
+-   Apply vectorized calculations and logical operations
+-   Perform calculations using functions with multiple vector arguments
+-   Apply any error messages received to debug your code
+
+# Criteria for Success:
+
+This assignment is worth a total of **100 points** (10% of your overall grade).
+
+Review the answers posted to the previous class exercises. Use the strategies and lessons learned during the class exercises and lectures to inform how to develop your code for this assignment. Also, pay particular attention that you are referring to R objects in your code and not to static numeric values.
+
+The code to answer the questions should only be 1-4 lines and your knitted Word document should not be longer than 5 pages. Additionally, make sure the output of your code answers the questions, but keep in mind that the code developed to accomplish some tasks may not need to produce any output. Therefore, pay careful attention to exactly what the question is asking for and translate that into R code.
+
+Follow the consistency guidelines and naming conventions that we went over in the Basics of R topic. There are many ways to accomplish any given task, so checking your answers is critical. Lastly, review my feedback once this assignment is graded and use it on future assignments.
+
+All questions are worth 10 points.
+
+------------------------------------------------------------------------
+
+# Working with Vectors
+
+In this assignment, you will explore data **(posted with this assignment)** from a public opinion poll conducted by Atlantic Media and Siemens ([more info about the poll here](http://www.scribd.com/doc/240607962/Atlantic-Media-Siemens-State-of-the-City-Raw-Data)). For sake of expediency, I've already read the data and codebook into R, and saved it as a .Rdata file. Ensure that this .Rdata file is saved in the same working directory as this .Rmd file.
+
+```{r}
+load("state_of_the_city_poll_data.Rdata")
+```
+
+1.  The variables `age` and `stud` use numeric codes to indicate when the respondent did not provide an answer to the question. Display the subset of the *codebook* data frame for these variables to figure out what the code for "Don't know" or "Refused" is.\
+    note: Loading the specified datafile will load both the *codebook* and *poll_dat* data frames into R Studio.
+```{r}
+View(df)
+
+
+
+```
+    
+    
+    
+
+```{r}
+
+# After: load("state_of_the_city_poll_data.Rdata")
+
+# If codebook isn't a data.frame (e.g., data.table/tibble), coerce once:
+codebook <- as.data.frame(codebook, stringsAsFactors = FALSE)
+
+# Helper to pick the first matching existing column name
+find_first <- function(cands, nm) {
+  hit <- intersect(cands, nm)
+  if (length(hit) == 0) NA_character_ else hit[1]
+}
+
+nm <- names(codebook)
+
+# Detect likely column names (adjust/add candidates as needed)
+var_col   <- find_first("Variable",nm)
+value_col <- find_first("Values",nm)
+label_col <- find_first("Label",nm)
+
+# Hard stop with a helpful message if any is missing
+if (is.na(var_col) || is.na(value_col) || is.na(label_col)) {
+  stop(
+    "Couldn't find expected codebook columns.\n",
+    "Have: ", paste(nm, collapse = ", "), "\n",
+    "Tried var in: variable/varname/var/name/var_name/question; ",
+    "value in: value/code/val; label in: label/levels/text/description."
+  )
+}
+
+# 1) ALL rows for age & stud
+subset_all <- codebook[tolower(codebook[[var_col]]) %in% c("age","stud"), , drop = FALSE]
+
+# Safely coerce for ordering:
+var_key  <- as.character(subset_all[[var_col]])
+# value could be factor/character; coerce via character -> numeric to avoid NA traps
+val_key  <- suppressWarnings(as.numeric(as.character(subset_all[[value_col]])))
+
+ord <- order(var_key, val_key)
+subset_all_sorted <- subset_all[ord, , drop = FALSE]
+subset_all_sorted
+
+
+```
+
+2.  Recode the variables `age` and `stud` in the polling data so that they are equal to `NA` when the respondent did not provide an answer. Use the `summary` function to show the results of the recoding.
+
+```{r}
+cb_var_col  <- "Variable"   
+cb_lab_col  <- "Label"     
+cb_code_col <- "Values"    
+
+# Ensure label column is character and valid UTF-8
+codebook[[cb_lab_col]] <- as.character(codebook[[cb_lab_col]])
+codebook[[cb_lab_col]] <- iconv(codebook[[cb_lab_col]], from = "", to = "UTF-8", sub = " ")
+
+
+
+## 1) Rows in the codebook that mean DK/Refused for age or stud
+idx <- codebook[[cb_var_col]] %in% c("age","stud") &
+       grepl("don.?t\\s*know|refus", codebook[[cb_lab_col]], ignore.case = TRUE)
+
+subset(codebook, idx, c(cb_var_col, cb_code_col, cb_lab_col))
+
+
+## 2) Build a mapping: variable -> vector of NA codes
+na_codes <- split(codebook[[cb_code_col]][idx], codebook[[cb_var_col]][idx])
+
+## 3) Recode those codes to NA in poll_dat
+for (v in names(na_codes)) {
+  # Coerce the code list to same type as the data column to ensure %in% matches
+  codes_v <- suppressWarnings(type.convert(na_codes[[v]], as.is = TRUE))
+  poll_dat[[v]][ poll_dat[[v]] %in% codes_v ] <- NA
+}
+
+## Check
+summary(poll_dat[c("age","stud")])
+
+
+```
+
+3.  According to the poll documentation, the representativeness of the sample can be improved by weighting the observations using the variable `weight`. Use the `summary` and `boxplot` functions to understand the distribution of this variable.
+
+```{r}
+summary(poll_dat$weight)
+boxplot(poll_dat$weight, horizontal = TRUE, main = "Sampling weight")
+
+
+```
+
+4.  What is the sum of the `weight` variable? What is the range (minimum and maximum) of the `weight` variable?\
+
+```{r}
+sum(poll_dat$weight, na.rm = TRUE)
+range(poll_dat$weight, na.rm = TRUE)
+
+```
+
+5.  When sampling weights are very unequal (i.e., most weights are quite small while a few are very large), it is sometimes prudent to truncate the weights that are larger than a certain value. Create a new variable in the `poll_dat` data frame called `weight2`, which is equal to `weight` except that large values are truncated at 20. Use the `summary` function to show the results of this new variable.
+
+```{r}
+poll_dat$weight2 <- pmin(poll_dat$weight, 20)
+summary(poll_dat$weight2)
+
+```
+
+6.  Calculate the weighted average of the variable `age` (that you previously recoded), weighting by the `weight2` variable and ignoring missing values. Save this calculation as a new object.
+
+```{r}
+w_age <- weighted.mean(poll_dat$age, poll_dat$weight2, na.rm = TRUE)
+w_age
+
+```
+
+7.  Find the number of respondents by community type.
+
+```{r}
+comm_var <- grep("usr|urban|suburb|rural|community", tolower(names(poll_dat)), value = TRUE)[1]
+table(poll_dat[[comm_var]], useNA = "ifany")
+
+#	R = Rural, S = Suburban, U = Urban
+
+```
+
+8.  Find the **weighted proportion** of respondents by each of the three community types. Note that the weighted proportion of respondents who are from **suburban** areas is equal to the sum of the weights corresponding to **suburban** respondents, divided by the sum of **all** the weights. Use the truncated `weight2` variable as the weighting variable.
+
+```{r}
+w_by_comm <- tapply(poll_dat$weight2, poll_dat[[comm_var]], sum, na.rm = TRUE)
+prop_by_comm <- w_by_comm / sum(poll_dat$weight2, na.rm = TRUE)
+prop_by_comm
+
+```
+
+The **weighted sample variance** of observations $x_1,...,x_n$ with weights $w_1,...,w_n$ is equal to $$s_w^2 = \frac{\sum_{i=1}^n w_i\left(x_i - \bar{x}_w\right)^2}{(\sum_{i=1}^n w_i)-1}$$ where $$\bar{x}_w = \frac{\sum_{i=1}^n w_i x_i}{\sum_{i=1}^n w_i}$$ is the weighted mean of the observations.
+
+9.  Using the above formula, calculate the weighted sample variance of the `age` variable using `weight2` for the weights. Check your answer against the `weightedVar` function in the `matrixStats` package.\
+    HINT: Be sure to first install the `matrixStats` package (through the RStudio **Install** menu under the **Packages** tab) and then load the package below using the `library` function.
+
+```{r}
+x <- poll_dat$age; w <- poll_dat$weight2; ok <- !is.na(x) & !is.na(w); x <- x[ok]; w <- w[ok]
+xbar_w <- sum(w * x) / sum(w)
+sw2 <- sum(w * (x - xbar_w)^2) / (sum(w) - 1)     # matches formula in the prompt
+library(matrixStats)
+sw2_pkg <- weightedVar(x = poll_dat$age, w = poll_dat$weight2, na.rm = TRUE, method = "unbiased")
+c(manual = sw2, matrixStats = sw2_pkg)
+
+```
+
+10. Calculate the average age of the sample using a simple average and using a weighted average based on the `weight2` variable. Calculate the mathematical difference between these values. Also, explain how you would describe these values to a non-technical user as it relates to population inferences.
+
+```{r}
+mean_simple   <- mean(poll_dat$age, na.rm = TRUE)
+mean_weighted <- weighted.mean(poll_dat$age, poll_dat$weight2, na.rm = TRUE)
+diff_weighted_minus_simple <- mean_weighted - mean_simple
+c(simple = mean_simple, weighted = mean_weighted, difference = diff_weighted_minus_simple)
+
+```
+
+**Your explanation for non-technical user**

@@ -1,0 +1,116 @@
+Variable,Rec,Start,End,Format,Label,Values,Missing Codes
+psraid,1,1,7,F7.0,Unique ID,,
+sample,1,8,8,F1.0,Sample type,"1 = Landline, 2 = Cell",
+lang,1,9,9,F1.0,Interview Language,"1 = English, 2 = Spanish",
+stratum,1,10,10,F1.0,Sample Stratum,,
+int_date,1,11,16,F6.0,Interview Date,,
+comp,1,17,18,F2.0,Completion type,,
+area,1,19,21,F3.0,Area code,"1 = Youngest Male First, 2 = Youngest Female First",
+llitext,1,22,22,F1.0,Under or Over 18,,
+qs1,1,23,23,F1.0,"S1. Are you under 18 years old, OR are you 18 or older?","1 = Under 18, 2 = 18 or older, 9 = don't know, refused",
+sex,1,24,24,F1.0,SEX. Respondent's sex,"1 = Male, 2 = Female",
+q1,1,25,25,F1.0,"Q1 Overall, how would you rate YOUR COMMUNITY as a place to live? Would you say it is [READ]",,"8 = Don't know, 9 = Refused"
+q2,1,26,26,F1.0,"Q2 Would you say that the quality of life in your community has gotten better, stayed about the same, or gotten worse since you have been living there? [READ]",,"8 = Don't know, 9 = Refused"
+q3a,1,27,27,F1.0,"Q3a We're interested in how much confidence you have in some different institutions. (First,) in general, how much confidence do you have in... -Your local public schools-?",,"8 = Don't know, 9 = Refused"
+q3b,1,28,28,F1.0,"Q3b We're interested in how much confidence you have in some different institutions. (First,) in general, how much confidence do you have in... -Public transportation where you live-?",,"5 = Doesn't apply, 8 = Don't know, 9 = Refused"
+q3c,1,29,29,F1.0,"Q3c We're interested in how much confidence you have in some different institutions. (First,) in general, how much confidence do you have in... -Your local police-?",,"8 = Don't know, 9 = Refused"
+q3d,1,30,30,F1.0,"Q3d We're interested in how much confidence you have in some different institutions. (First,) in general, how much confidence do you have in... -Your local government-?",,"8 = Don't know, 9 = Refused"
+q3e,1,31,31,F1.0,"Q3e We're interested in how much confidence you have in some different institutions. (First,) in general, how much confidence do you have in... -Your state government-?",,"8 = Don't know, 9 = Refused"
+q3f,1,32,32,F1.0,"Q3f We're interested in how much confidence you have in some different institutions. (First,) in general, how much confidence do you have in... -Your local or state government when it comes to maintaining roads and bridges-?",,"8 = Don't know, 9 = Refused"
+q3g,1,33,33,F1.0,"Q3g We're interested in how much confidence you have in some different institutions. (First,) in general, how much confidence do you have in... -Local hospitals and health care facilities-?",,"8 = Don't know, 9 = Refused"
+q4,1,34,34,F1.0,Q4 How would you describe the availability of good paying jobs where you live? [READ],,"8 = Don't know, 9 = Refused"
+q5,1,35,35,F1.0,"Q5 Over the past 12 months, would you say job opportunities where you live have [READ]",,"8 = Don't know, 9 = Refused"
+q6,1,36,36,F1.0,"Q6 Thinking about your regular expenses, like housing, food and transportation, how would you describe the cost of living where you live? [READ]",,"8 = Don't know, 9 = Refused"
+q7,1,37,37,F1.0,Q7 How would you describe your household's financial situation? Would you say you [READ IN ORDER],,"8 = Don't know, 9 = Refused"
+employ,1,38,39,F2.0,EMPLOY. Which of the following best describes your current employment status? [READ],,"98 = Don't Know, 99 = Refused"
+stud,1,40,40,F1.0,STUD. Are you also a full- or part-time student?,,"8 = Don't know, 9 = Refused"
+q8,1,41,41,F1.0,"Q8 On most workdays, do you commute to work by car, by bus, or by train such as a subway or commuter rail?",,"8 = Don't know, 9 = Refused"
+q9,1,42,42,F1.0,"Q9 Would you say traffic where you live is a big problem, a small problem, or not a problem?",,"8 = Don't know, 9 = Refused"
+q10a,1,43,43,F1.0,"Q10a Now I'm going to read you some ideas for improving traffic conditions where you live. For each, please tell me what impact you think it would have. (First,) how about -Building more roads or vehicle lanes-?",,"8 = Don't know, 9 = Refused"
+q10b,1,44,44,F1.0,"Q10b Now I'm going to read you some ideas for improving traffic conditions where you live. For each, please tell me what impact you think it would have. (First,) how about -Upgrading public transportation like buses, rail or subway-?",,"8 = Don't know, 9 = Refused"
+q10c,1,45,45,F1.0,"Q10c Now I'm going to read you some ideas for improving traffic conditions where you live. For each, please tell me what impact you think it would have. (First,) how about -Building more bike lanes-?",,"8 = Don't know, 9 = Refused"
+q10d,1,46,46,F1.0,"Q10d Now I'm going to read you some ideas for improving traffic conditions where you live. For each, please tell me what impact you think it would have. (First,) how about -Adding and repairing sidewalks-?",,"8 = Don't know, 9 = Refused"
+q10e,1,47,47,F1.0,"Q10e Now I'm going to read you some ideas for improving traffic conditions where you live. For each, please tell me what impact you think it would have.(First,) how about -Encouraging more employers to allow their employees to work from home-?",,"8 = Don't know, 9 = Refused"
+q11,1,48,48,F1.0,Q11 Some cities have tried to discourage people from driving as often by charging more for public parking spaces on certain days or at certain times. Would you support or oppose such a policy where you live?,,"8 = Don't know, 9 = Refused"
+q12,1,49,49,F1.0,Q12 How would you describe the physical condition of the roads and bridges where you live? Would you say they are [READ],,"8 = Don't know, 9 = Refused"
+q13,1,50,50,F1.0,"Q13 In general, how safe would you say you are from crime when walking in your neighborhood after dark? Would you say you are very safe, somewhat safe, not too safe, or not at all safe? [READ]",,"8 = Don't know, 9 = Refused"
+q14,1,51,51,F1.0,"Q14 Over the past several years, would you say that crime where you live has increased, decreased or stayed about the same?",,"8 = Don't know, 9 = Refused"
+q15a,1,52,52,F1.0,"Q15a Now I'm going to read you some ideas for improving safety where you live. For each, please tell me what impact you think it would have. (First,) how about -Hiring more police-?",,"8 = Don't know, 9 = Refused"
+q15b,1,53,53,F1.0,"Q15b Now I'm going to read you some ideas for improving safety where you live. For each, please tell me what impact you think it would have. (First,) how about -Imposing longer sentences for crimes-?",,"8 = Don't know, 9 = Refused"
+q15c,1,54,54,F1.0,"Q15c Now I'm going to read you some ideas for improving safety where you live. For each, please tell me what impact you think it would have. (First,) how about -Creating more employment and educational opportunities for young people-?",,"8 = Don't know, 9 = Refused"
+q15d,1,55,55,F1.0,"Q15d Now I'm going to read you some ideas for improving safety where you live. For each, please tell me what impact you think it would have. (First,) how about -Reducing access to guns-?",,"8 = Don't know, 9 = Refused"
+q16,1,56,56,F1.0,"Q16 When you think about your own children or other children in your neighborhood today, do you believe the schooling they are receiving at the elementary, middle and high school level is preparing them to perform college work successfully?",,"8 = Don't know, 9 = Refused"
+q17,1,57,57,F1.0,"Q17  Still thinking about your own children or other children in your neighborhood today, do you believe the schooling they are receiving at...school level is preparing them to enter the job market if they choose NOT to go to college?",,"8 = Don't know, 9 = Refused"
+q18a,1,58,58,F1.0,"Q18a Please tell me what impact you think each of the following changes would have on improving the quality of public education in your community. (First,/What about) -A longer school DAY-?",,"8 = Don't know, 9 = Refused"
+q18b,1,59,59,F1.0,"Q18b Please tell me what impact you think each of the following changes would have on improving the quality of public education in your community. (First,/What about) -Smaller classes-?",,"8 = Don't know, 9 = Refused"
+q18c,1,60,60,F1.0,Q18c Please tell me what impact you think each of the following changes would have on improving the quality of public education in your community...-Paying public school teachers higher salaries to attract more talented people-?,,"8 = Don't know, 9 = Refused"
+q18d,1,61,61,F1.0,Q18d Please tell me what impact you think each of the following changes would have on improving the quality of public education in your community...-Linking the pay for teachers and administrators to the performance of their students-?,,"8 = Don't know, 9 = Refused"
+q19,1,62,62,F1.0,"Q19 Do you believe there are high-quality colleges or vocational schools available for young people to attend where you live, or do you think young people need to go elsewhere for higher education?",,"8 = Don't know, 9 = Refused"
+q20,1,63,63,F1.0,"Q20 How would you rate the availability of job training for adults where you live, whether at a community college or through other sources? [READ]",,"8 = Don't know, 9 = Refused"
+q21,1,64,64,F1.0,Q21 How often would you say the electricity in your home goes out because of bad weather? [READ],,"8 = Don't know, 9 = Refused"
+q22,1,65,65,F1.0,"Q22 Thinking about the utilities in your area that provide services such as electricity and water, how much confidence do you have in their ability to maintain and resume service during severe weather...",,"8 = Don't know, 9 = Refused"
+q23,1,66,66,F1.0,"Q23 Would you prefer that the energy you use in your home come from renewable sources like solar and wind power rather than fossil fuels like coal or natural gas, even if it meant your electricity bill would increase?",,"8 = Don't know, 9 = Refused"
+q24,1,67,67,F1.0,"Q24 How would you rate the availability of high-quality arts, cultural activities, and nightlife options where you live? [READ]",,"8 = Don't know, 9 = Refused"
+q25,1,68,68,F1.0,Q25 How would you rate the availability of high-quality parks or recreation facilities where you live? [READ],,"8 = Don't know, 9 = Refused"
+q26,1,69,69,F1.0,Q26 How easy or difficult would you say it is to find rental housing where you live that is affordable and of good quality? [READ],,"8 = Don't know, 9 = Refused"
+q27,1,70,70,F1.0,Q27 How easy or difficult would you say it is to find houses where you live to buy that are affordable and of good quality? [READ],,"8 = Don't know, 9 = Refused"
+q28,1,71,71,F1.0,Q28 What do you think would do more to improve the quality of life where you live? [READ],,"8 = Don't know, 9 = Refused"
+q29,1,72,72,F1.0,"Q29 When you think about the public services where you live, like roads, education, and police, do you think these services are an...for your local taxes?",,"8 = Don't know, 9 = Refused"
+q30,1,73,73,F1.0,"Q30 Still thinking about the public services...would you say the QUALITY of these services is determined mostly by government policies at the local level, at the state level, OR at the federal level?",,"8 = Don't know, 9 = Refused"
+q31,1,74,74,F1.0,"Q31 Many communities have non-profit groups and other volunteer organizations, such as those organized by religious institutions...Where you live would you say that organizations like this are: [READ]",,"8 = Don't know, 9 = Refused"
+q32a,1,75,75,F1.0,"Q32a If your local government has more tax revenue than expected, do you think -spending more on transportation- would have a major, minor, or no impact on improving the overall quality of life where you live?",,"8 = Don't know, 9 = Refused"
+q32b,1,76,76,F1.0,"Q32b If your local government has more tax revenue than expected, do you think -spending more on public schools- would have a major, minor, or no impact on improving the overall quality of life where you live?",,"8 = Don't know, 9 = Refused"
+q32c,1,77,77,F1.0,"Q32c If your local government has more tax revenue than expected, do you think -spending more to improve public safety- would have a major, minor, or no impact on improving the overall quality of life where you live?",,"8 = Don't know, 9 = Refused"
+q32d,1,78,78,F1.0,"Q32d If your local government has more tax revenue than expected, do you think -cutting taxes for individuals- would have a major, minor, or no impact on improving the overall quality of life where you live?",,"8 = Don't know, 9 = Refused"
+q32e,1,79,79,F1.0,"Q32e If your local government has more tax revenue than expected, do you think -cutting taxes for business- would have a major, minor, or no impact on improving the overall quality of life where you live?",,"8 = Don't know, 9 = Refused"
+q33,1,80,80,F1.0,"Q33 Where you live, would you say the air you breathe is: [READ]",,"8 = Don't know, 9 = Refused"
+q34,1,81,81,F1.0,Q34 How about the water that comes out of the tap? Would you say it is: [READ],,"8 = Don't know, 9 = Refused"
+q35,1,82,82,F1.0,"Q35 Do you believe the sewers and water treatment plants where you live dispose of waste in an environmentally responsible manner, or not? ",,"8 = Don't know, 9 = Refused"
+q36,1,83,83,F1.0,Q36 About how long have you lived in the neighborhood where you live now? Have you lived there... [READ 1-5],,"8 = Don't know, 9 = Refused"
+q37,1,84,84,F1.0,"Q37 Even if you haven't made any decisions yet, would you consider moving within the next year or two from the place where you live now, or not?",,"8 = Don't know, 9 = Refused"
+q38a,1,85,85,F1.0,"Q38a Would you say each of the following is a reason or not a reason you would consider moving somewhere else? (First/Next,) -More economic opportunity-",,"8 = Don't know, 9 = Refused"
+q38b,1,86,86,F1.0,"Q38b Would you say each of the following is a reason or not a reason you would consider moving somewhere else? (First/Next,) -Lower cost of living-",,"8 = Don't know, 9 = Refused"
+q38c,1,87,87,F1.0,"Q38c Would you say each of the following is a reason or not a reason you would consider moving somewhere else? (First/Next,) -Better public schools-",,"8 = Don't know, 9 = Refused"
+q38d,1,88,88,F1.0,"Q38d Would you say each of the following is a reason or not a reason you would consider moving somewhere else? (First/Next,) -A more city style of life-",,"8 = Don't know, 9 = Refused"
+q38e,1,89,89,F1.0,"Q38e Would you say each of the following is a reason or not a reason you would consider moving somewhere else? (First/Next,) -A more suburban or rural style of life-",,"8 = Don't know, 9 = Refused"
+par,1,90,90,F1.0,PAR. Are you the parent or guardian of any children UNDER 18 years of age?,,9 = Don't know/refused
+kidage1,1,91,91,F1.0,KidAge1. How many of these children are age 5 or younger?,,"8 = Don't know, 9 = Refused"
+kidage2,1,92,92,F1.0,KidAge2. How many of these children are between ages 6 and 11?,,"8 = Don't know, 9 = Refused"
+kidage3,1,93,93,F1.0,KidAge3. How many of these children are between ages 12 and 17?,,"8 = Don't know, 9 = Refused"
+ownrent,1,94,94,F1.0,OWNRENT Do you own or rent your home?,,"8 = Don't know, 9 = Refused"
+ql1,1,95,95,F1.0,L1. Now thinking about your telephone use... Do you have a working cell phone?,,"8 = Don't know, 9 = Refused"
+ql1a,1,96,96,F1.0,L1a. Does anyone else in your household have a working cell phone?,,"8 = Don't know, 9 = Refused"
+qc1,1,97,97,F1.0,C1. Now thinking about your telephone use... Is there at least one telephone INSIDE your home that is currently working and is not a cell phone?,,"8 = Don't know, 9 = Refused"
+hh1,1,98,98,F1.0,"HH1. How many adults, age 18 and over, currently live in your household INCLUDING YOURSELF?",,"8 = Don't know, 9 = Refused"
+age,1,99,100,F2.0,AGE. What is your age?,97 = 97 or older,"98 = Don't know, 99 = Refused"
+educ2,1,101,102,F2.0,EDUC2. What is the highest level of school you have COMPLETED or the highest degree you have RECEIVED? [DO NOT READ] [INTERVIEWER NOTE: Enter code 3-HS grad if R completed training that did NOT count toward a degree],,"98 = Don't know, 99 = Refused"
+hisp,1,103,103,F1.0,"HISP. Are you of Hispanic or Latino origin, such as Mexican, Puerto Rican, Cuban or some other Spanish background?",,"8 = Don't know, 9 = Refused"
+race,1,104,104,F1.0,"RACE. What is your race? Are you white, black, Asian, or some other race? [IF R SAYS HISPANIC OR LATINO, PROBE: Do you consider yourself a WHITE (Hispanic/Latino) or a BLACK (Hispanic/Latino)?",,"8 = Don't know, 9 = Refused"
+birth_hisp,1,105,105,F1.0,"BIRTH_HISP. Were you born in the United States, on the island of Puerto Rico, or in another country?",,"8 = Don't know, 9 = Refused"
+inc,1,106,107,F2.0,"INC. Last year – that is, in 2013 – approximately what was your total family income before taxes? Just tell me when I get to the right category. [READ]",,"98 = Don't know, 99 = Refused"
+inc1,1,108,108,F1.0,"INC1. ...Keeping in mind that this is a completely confidential survey, can you please tell me if your total household income BEFORE taxes last year was over or under $75,000?",,"8 = Don't know, 9 = Refused"
+inc2,1,109,109,F1.0,"INC2. Was it over or under $50,000? [INTERVIEWER: EXACTLY $50,000 SHOULD BE RECORDED AS PUNCH 1 – ‘OVER $50,000']",,"8 = Don't know, 9 = Refused"
+inc3,1,110,110,F1.0,"INC3. Was it over or under $30,000? [INTERVIEWER: EXACTLY $30,000 SHOULD BE RECORDED AS PUNCH 1 – ‘OVER $30,000']",,"8 = Don't know, 9 = Refused"
+reg,1,111,111,F1.0,REG. Which of these statements best describes you? [READ IN ORDER].,,"8 = Don't know, 9 = Refused"
+party,1,112,112,F1.0,"PARTY. In politics TODAY, do you consider yourself a Republican, Democrat, or Independent?",,"8 = Don't know, 9 = Refused"
+partyln,1,113,113,F1.0,"PARTYLN. As of today, do you lean more to the Republican Party or more to the Democratic Party?",,"8 = Don't know, 9 = Refused"
+contact1,1,114,114,F1.0,CONTACT1. Reporters from news organizations may want to call back people who participated in our survey to talk about some of the issues we discussed. Would you be willing to talk to a reporter at a later date?,,9 = refused
+contact2,1,115,115,F1.0,"CONTACT2. So that a reporter can reach you more easily, may I have your first name?",,9 = declined to be recontacted at this point
+rzipcode,1,116,120,A5,RZIPCODE. What is your zip code?,,99999 = Don't Know/Refused
+zipcode,1,121,125,A5,ZIPCODE. Combined RZIPCODE and SZIPCODE for refused,,99999 = Don't Know/Refused
+nameos,1,126,175,A50,,,
+raceos,1,176,325,A150,,,
+state,1,326,327,F2.0,State from FIPS code - 2012 zip merge,"1 = Alabama, 2 = Alaska, 4 = Arizona, 5 = Arkansas, 6 = California, 8 = Colorado, 9 = Connecticut, 10 = Delaware, 11 = District of Columbia, 12 = Florida, 13 = Georgia, 15 = Hawaii, 16 = Idaho, 17 = Illinois, 18 = Indiana, 19 = Iowa, 20 = Kansas, 21 = Kentucky, 22 = Louisiana, 23 = Maine, 24 = Marlyand, 26 = Massachusetts, 26 = Michigan, 27 = Minnesota, 28 = Mississipi,  29 = Missouri, 30 = Montana, 31 = Nebraska, 32 = Nevada, 33 = New Hampshire, 34 = New Jersey, 35 = New Mexico, 36 = New York, 37 = North Carolina, 38 = North Dakota, 39 = Ohio, 40 = Oklahoma, 41 = Oregon, 42 = Pennsylvania, 44 = Rhode Island, 45 = South Carolina, 46 = South Dakota, 47 = Tennessee, 48 = Texas, 49 = Utah, 50 = Vermont, 51 = Virginia, 53 = Washington, 54 = West Virginia, 55 = Wisconsin, 56 = Wyoming",
+fips,1,328,332,F5.0,FIPS state and county code - 2012 zip merge,,
+density,1,333,333,F1.0,Recoded Population Density 2010 Census - 2012 zip merge,"1 = Lowest, 5 = Highest",
+cregion,1,334,334,F1.0,Census Region - 2012 zip merge,"1 = Northeast, 2 = Midwest, 3 = South, 4 = West",
+usr,1,335,335,A1,Community type - merge from Zip 2012,"R = Rural, S = Suburban, U = Urban",
+income,1,336,336,F1.0,Income Summary,"1 = Under $30k, 2 = $30k - LT $50k, 3 = $50k - LT $75k, $75K+",9 = Undesignated
+iphoneuse,1,337,337,F1.0,Individual phone use,"1 = ""LLO"", 2= ""Dual, 3 = ""CPO""",
+hphoneuse,1,338,338,F1.0,Household phone use,"1 = ""LLO"", 2= ""Dual, 3 = ""CPO""",
+racethn,1,339,339,F1.0,Race/Ethnicity,"1 = White not Hispanic, 2 = Black not Hispanic, 3 = Hispanic, 4 = Other not Hispanic",9 = Don't know/refused
+racethn2,1,340,340,F1.0,Race/Ethnicity,"1 = White not Hispanic, 2 = Black not Hispanic, 3 = Hispanic born in US, 4 = Hisp not born in US, 5 = Other not Hispanic",9 = Don't know/refused
+recage,1,341,341,F1.0,Recoded age,"1 = 18-24, 2 = 25-34, 3 = 35-44, 4 = 45-54, 5 = 55-64, 6 = 65+",9 = Don't know/refused
+receduc,1,342,342,F1.0,Recoded education,"1 = HS grad or less, 2 = some coll/comm coll, 3 = coll+",9 = Don't know/refused
+wt1,1,343,347,F5.2,,,
+weight,1,348,352,F5.2,Final weight,,

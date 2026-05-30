@@ -1,0 +1,161 @@
+---
+title: "HW 1 - Reading in Data"
+author: "DUE: Thursday, September 11 at 11:59pm"
+output: word_document
+---
+```{r include = FALSE}
+knitr::opts_chunk$set(comment = "")
+```
+
+## Purpose:
+
+The typical first step in a data analysis is to get the data into R. Sometimes (*if you are lucky!*) the data are already in a .RData file, but many times they are in a .csv file. Once you get the data into R, then you need to make sure the data imported correctly (**you cannot assume this**). A common next step is to calculate basic descriptive statistics. With R, you can save the output of those calculations as new objects. You can then refer to these R objects to do some data cleaning and manipulation in order to answer your research questions.
+
+## Task:
+
+The following are the activities you will accomplish as you work through this assignment.
+
+* Recall and extend your understanding of R syntax and functions relevant to working with data
+* Be able to read a .csv file into R and check that the data read in correctly
+* Create new R objects that are the result of basic calculations/statistics
+* Use these objects to subset from the original dataset
+* Apply any error messages received to debug your code
+
+## Criteria for Success:
+
+This assignment is worth a total of **100 points** (10% of your overall grade).
+
+Review the answers posted to the previous class exercises. Use the strategies and lessons learned during the class exercises to inform how to develop your code for this assignment. Also, pay particular attention that you are referring to R objects in your code and not to static numeric values. Your code needs to be able to be flexible based on an updated datafile, not static that would require you to create new code. 
+
+The code to answer each question should only be 1 or 2 lines and output values of objects necessary to answer the question. For example, if I ask you to output the first 2 rows of the dataset and you output all the rows, that will be marked as incorrect. Additionally, keep in mind that the code developed to accomplish some tasks may not produce any output, such as when creating a new R object. Therefore, pay careful attention to exactly what the question is asking and translate that into R code. It may be helpful to complete the task interactively with the command line in the console window and then return to place the correct code into this R Markdown file.
+
+Follow the consistency guidelines and naming conventions that we went over in class. There are many ways to accomplish any given task, so checking your answers is critical. Lastly, review my feedback once this assignment is graded and use it on future assignments.
+
+***
+
+# Reading in Data
+
+In this assignment, you will explore a dataset (posted in iCollege) containing annual high school graduation rates in all fifty states (plus the District of Columbia) from three school years. Read more about these data on the [NCES website](http://nces.ed.gov/ccd/tables/ACGR_2010-11_to_2012-13.asp). Ensure that the .csv file containing the data is saved in the same folder (i.e., working directory) as this .Rmd file.
+
+The first set of questions before reading in the data are more general, while the second set of questions are specific to the example data.
+
+1. What is the name of the function used to find **help** pages on a specific topic? Use this function with the `subset` function to find its help documentation. (Be sure to also read the help documentation for the `subset` function, because this function will be used extensively in this assignment.)  
+*(5 points)*
+```{r, eval = FALSE}
+# Replace this comment with your R code
+```
+
+2. Give at least three reasons why is it useful to use R Script or R Markdown to write code for data management and analysis?  
+*(5 points)*
+
+**Replace this text with your response.**
+
+3. What are your first impressions of the Lander book?  
+*(5 points)*
+
+**Replace this text with your response. Some of these are 'gimmies'.**
+
+4. What is the R designation for representing a missing value? Provide this syntax below.  
+*(5 points)*
+```{r}
+# Replace this comment with your R code
+```
+
+5. What function would you call to find out what type of variable you are working with (i.e, the **class** of an object)? Use this function to determine what type of variable `Temp` is from the `airquality` dataset provided in R. 
+*(5 points)*
+```{r}
+# Replace this comment with your R code
+```
+
+6. Read in the example data by running the two lines of code below. 
+*(5 points)*
+
+```{r}
+ACGR <- read.csv("ACGR_2010-11_to_2012-13_data.csv",
+                 stringsAsFactors = FALSE)
+head(ACGR)
+```
+
+7. How many rows and columns does the dataset contain?  
+*(5 points)*
+```{r}
+# Replace this comment with your R code
+```
+
+8. Which values would you report if asked about number of observations and number of variables this dataset contains?
+*(5 points)*
+
+**Replace this text with your response. **
+
+
+9. Show the last 7 rows of the dataset using the `tail` function.  
+*(5 points)*
+```{r}
+# Replace this comment with your R code
+```
+
+10. Report the mean of the **2010-11** graduation rates and save it as a new object.  
+*(5 points)*
+```{r}
+# Replace this comment with your R code
+```
+
+11. Use `subset` and the object you created in the previous question to display the states (output only the state names) whose **2011-12** graduation rates were below that year's mean graduation rate.   
+*(5 points)*
+```{r}
+# Replace this comment with your R code
+```
+
+12. What state had the **highest** graduation rate during the **2011-12** school year? Store this value in the object `grad_max`.  
+*(5 points)*
+```{r}
+# Replace this comment with your R code
+```
+
+13. Use the `subset` function and the object created in the prior question to find the state (code should return only the state name) with the highest graduation rate during the **2011-12** school year.  
+*(5 points)*
+```{r}
+# Replace this comment with your R code
+```
+
+14. What was the **lowest** graduation rate during the **2011-12** school year? Store this value in the object `grad_min`.  
+*(5 points)*
+```{r}
+# Replace this comment with your R code
+```
+
+15. Use the `subset` function and the object created in the prior question to find the state (code should return only the state name) with the lowest graduation rate during the **2011-12** school year.  
+*(5 points)*
+```{r}
+# Replace this comment with your R code
+```
+
+16. Which state had the largest **change** in graduation rates between 2010-11 and 2012-13? Was it an increase or a decrease? (Your code must output a positive or negative difference associated with the state.)  
+*(5 points)*
+```{r}
+# Replace this comment with your R code
+```
+
+17. What was the median change in graduation rates between 2010-11 and 2012-13?  
+*(5 points)*
+```{r}
+# Replace this comment with your R code
+```
+
+18. Did the median graduation rate increase or decrease between 2010-11 and 2012-13?
+*(5 points)*
+```{r}
+# Replace this comment with your R code
+```
+
+19. Which five states had the largest **increase** in graduation rates between 2010-11 and 2012-13?  
+*(5 points)*
+```{r}
+# Replace this comment with your R code
+```
+
+20. Which state had the largest change in graduation rates between 2010-11 and 2012-13? Was it an increase or a decrease? (Your code must output a positive or negative difference associated with the state.)  
+*(5 points)*
+```{r}
+# Replace this comment with your R code
+```

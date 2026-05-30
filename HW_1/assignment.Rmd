@@ -1,0 +1,248 @@
+---
+output:
+  word_document: default
+  html_document: default
+---
+
+
+# R Markdown 
+
+```yaml
+
+title: "HW 1 - Reading in Data"
+author: "DUE: Thursday, September 11 at 11:59pm"
+output: word_document
+
+```
+
+```{r include=FALSE}
+knitr::opts_chunk$set(comment = "", echo = TRUE, message = FALSE, warning = FALSE)
+```
+
+## Purpose
+
+*(Keep this section as-is from the prompt.)*
+
+## Task
+
+*(Keep this section as-is from the prompt.)*
+
+## Criteria for Success
+
+*(Keep this section as-is from the prompt.)*
+
+---
+
+# Reading in Data
+
+> **Tip:** Your CSV’s columns are `State`, `Abbr`, `SY2010_11`, `SY2011_12`, `SY2012_13`. Use `na.rm = TRUE` whenever you compute summary stats.
+
+---
+
+### 1) Help pages
+
+*(5 points)*
+
+```{r}
+# The function is help(). Use it with subset like this:
+help("subset")
+```
+
+---
+
+### 2) Why R Script / R Markdown?
+
+*(5 points)*
+
+* Reproducible: rerun on updated data with zero manual edits.
+* Transparent: code + narrative in one file for easy grading and collaboration.
+* Portable: easy to share; same code runs on different machines.
+
+---
+
+### 3) First impressions of Lander book
+
+*(5 points)*
+*(Write 2–3 sentences of your own—don’t overthink it.)*
+
+---
+
+### 4) Missing value in R
+
+*(5 points)*
+
+```{r}
+# R uses NA to represent missing values:
+NA
+```
+
+---
+
+### 5) Function to get an object’s class; apply to airquality\$Temp
+
+*(5 points)*
+
+```{r}
+class(airquality$Temp)
+```
+
+---
+
+### 6) Read in the ACGR data
+
+*(5 points)*
+
+```{r}
+ACGR <- read.csv("C:/Users/USER/Documents/HW_1/data.csv", stringsAsFactors = FALSE)
+head(ACGR, 6)
+```
+
+> If your local filename differs (e.g., has “(1)” in it), rename it to match the line above **or** change the string to your exact filename.
+
+---
+
+### 7) How many rows and columns?
+
+*(5 points)*
+
+```{r}
+dim(ACGR)  # rows, columns
+```
+
+---
+
+### 8) Which values to report (observations vs variables)?
+
+*(5 points)*
+The number of **observations** is `r nrow(ACGR)` (rows). The number of **variables** is `r ncol(ACGR)` (columns).
+
+---
+
+### 9) Last 7 rows
+
+*(5 points)*
+
+```{r}
+tail(ACGR, 7)
+```
+
+---
+
+### 10) Mean of **2010–11** rates; save as new object
+
+*(5 points)*
+
+```{r}
+mean_2010_11 <- mean(ACGR$SY2010_11, na.rm = TRUE); mean_2010_11
+```
+
+---
+
+### 11) States with **2011–12** below **that year’s** mean
+
+*(5 points)*
+
+> The prompt says “use the object from the previous question,” but it refers to **2011–12**. To be precise, compute the **2011–12** mean and use it below.
+
+```{r}
+mean_2011_12 <- mean(ACGR$SY2011_12, na.rm = TRUE)
+subset(ACGR, SY2011_12 < mean_2011_12, select = State)$State
+```
+
+---
+
+### 12) Highest **2011–12** rate; store in `grad_max`
+
+*(5 points)*
+
+```{r}
+grad_max <- max(ACGR$SY2011_12, na.rm = TRUE); grad_max
+```
+
+---
+
+### 13) State with the highest **2011–12** rate (name only)
+
+*(5 points)*
+
+```{r}
+subset(ACGR, SY2011_12 == grad_max, select = State)$State
+```
+
+---
+
+### 14) Lowest **2011–12** rate; store in `grad_min`
+
+*(5 points)*
+
+```{r}
+grad_min <- min(ACGR$SY2011_12, na.rm = TRUE); grad_min
+```
+
+---
+
+### 15) State with the lowest **2011–12** rate (name only)
+
+*(5 points)*
+
+```{r}
+subset(ACGR, SY2011_12 == grad_min, select = State)$State
+```
+
+---
+
+### 16) Largest **change** from 2010–11 to 2012–13; show signed difference
+
+*(5 points)*
+
+```{r}
+chg <- transform(ACGR, diff = SY2012_13 - SY2010_11)
+chg[which.max(abs(chg$diff)), c("State", "diff")]
+```
+
+---
+
+### 17) Median change from 2010–11 to 2012–13
+
+*(5 points)*
+
+```{r}
+median(chg$diff, na.rm = TRUE)
+```
+
+---
+
+### 18) Did the **median** rate increase or decrease (2010–11 vs 2012–13)?
+
+*(5 points)*
+
+```{r}
+med_10 <- median(ACGR$SY2010_11, na.rm = TRUE); med_13 <- median(ACGR$SY2012_13, na.rm = TRUE)
+c(median_2010_11 = med_10, median_2012_13 = med_13, change = med_13 - med_10)
+```
+
+*(Positive `change` = increase; negative = decrease.)*
+
+---
+
+### 19) Top five **increases** (2010–11 → 2012–13)
+
+*(5 points)*
+
+```{r}
+inc <- subset(chg, diff > 0, select = c(State, diff))
+head(inc[order(-inc$diff), ], 5)
+```
+
+---
+
+### 20) Largest signed change (duplicate of Q16)
+
+*(5 points)*
+
+```{r}
+chg[which.max(abs(chg$diff)), c("State", "diff")]
+```
+
+---
+
