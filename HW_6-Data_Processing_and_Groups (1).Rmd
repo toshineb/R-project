@@ -1,0 +1,142 @@
+---
+title: "HW 6 - Data Processing and Group Reporting"
+author: "DUE: Thursday, November 6 at 11:59pm"
+output: word_document
+---
+```{r include = FALSE}
+knitr::opts_chunk$set(comment = "")
+```
+
+# Purpose:
+
+In this assignment, you will clean and analyze data from a 1990 survey of Chinese schoolchildren in the 3rd and 6th grades. You will apply approaches from class demonstrations and exercises (i.e., group-wise data reporting) to calculate descriptive statistics. Sometimes when prepping data for analysis, files need to be merged in order to organize the data in a way that facilitates desired reporting. Additionally, data may need to be reshaped in order to achieve desired data organization.
+
+# Task:
+
+The following are the activities you will accomplish as you work through this assignment.
+
+* Create factor variables with appropriate category labels
+* Calculate descriptive statistics by use of group-wise processing
+* Produce a correlation matrix
+* Merge data files together
+* Reshape a dataset 
+* Apply any error messages received to debug your code
+
+# Criteria for Success:
+
+This assignment is worth a total of **100 points** (10% of your overall grade). Each question is worth 10 points.
+
+Review the answers posted to the previous class exercises, especially the Topic 9 and 10 class exercises. Use the strategies and lessons learned during the class exercises to inform how to develop your code for this assignment.
+
+The code to answer each question should only be 1-3 lines, except for the question 4 where you have to create a helper function (previously covered). Additionally, you will likely need to activate packages we have previously utilized to accomplish some of the tasks. As always, pay careful attention to exactly what the question is asking you to do. Then, translate those instructions into R code.
+
+Follow the consistency guidelines and naming conventions. There are many ways to accomplish any given task, so checking your answers is critical. Lastly, review my feedback once this assignment is graded and use it on future assignments.
+
+***
+
+## Chinese Schoolchildren Survey
+
+The Chinese Schoolchildren Survey used a multi-stage sampling design, in which urban districts or rural counties were sampled, then schools within selected districts/counties were sampled. Finally, children within selected schools were sampled. The selection of districts/counties was stratified by province and urbanicity. The original codebook for the survey is posted on iCollege along with the data files in the **Data** folder under **Content**. 
+```{r}
+library(dplyr)
+library(tidyr)
+library(broom)
+csc    <- read.csv("Chinese_children_survey_data.csv")
+
+```
+
+1. Consult the codebook for the interpretation of the coding used in the `PROVINCE`, `REGION`, and `GRADE` variables from the survey data. Create new variables called `province`, `urbanicity`, and `grade` in the dataset that contain the same information as these variables, but are formatted as factors with easily interpretable labels.  
+
+```{r}
+
+### 1) Make factor variables with readable labels
+
+csc <- csc %>%
+  mutate(province=factor(PROVINCE, levels=c(1,2,3,4,5), labels=c("Beijing","Shanghai","Guangdong","Sichuan","Liaoning")),
+         urbanicity=factor(REGION, levels=c(1,2), labels=c("Urban","Rural")),
+         grade=factor(GRADE, levels=c(3,6), labels=c("Grade 3","Grade 6")))
+
+```
+
+2. Calculate and report the sample size, mean, standard deviation, minimum, and maximum for the first math total score `MATHS1` **by province**. Make sure that the output organizes the results in one table so that they are easy to read.  
+
+```{r}
+csc %>% group_by(province) %>%
+  summarise(n=n(), mean=mean(MATHS1,na.rm=TRUE), sd=sd(MATHS1,na.rm=TRUE), min=min(MATHS1,na.rm=TRUE), max=max(MATHS1,na.rm=TRUE), .groups="drop")
+
+```
+
+3. Now, calculate and report the mean, standard deviation, minimum, and maximum for the first verbal total score `VERBS1` for **urban** and **rural** regions in each of the two **grade levels**. Make sure that the output organizes the results in one table so that they are easy to read.  
+
+```{r}
+csc %>% group_by(urbanicity, grade) %>%
+  summarise(mean=mean(VERBS1,na.rm=TRUE), sd=sd(VERBS1,na.rm=TRUE), min=min(VERBS1,na.rm=TRUE), max=max(VERBS1,na.rm=TRUE), .groups="drop")
+
+```
+
+4. For the first verbal total score `VERBS1`, calculate the standardized mean difference (based on the pooled standard deviation) between **urban** and **rural** regions in each of the **two grade levels**. Make sure that the output organizes the results in one table so that they are easy to read.  
+
+```{r}
+smd_pooled <- function(x, g){ x1<-x[g=="Urban"]; x2<-x[g=="Rural"]; n1<-sum(!is.na(x1)); n2<-sum(!is.na(x2))
+  sp<-sqrt(((n1-1)*sd(x1,na.rm=TRUE)^2 + (n2-1)*sd(x2,na.rm=TRUE)^2)/(n1+n2-2)); (mean(x1,na.rm=TRUE)-mean(x2,na.rm=TRUE))/sp }
+csc %>% group_by(grade) %>% summarise(SMD_UminusR = smd_pooled(VERBS1, urbanicity), .groups="drop")
+
+```
+
+The survey also included a set of questions having to do with the child's personality, as reported by the child's self-report, one of the child's classmates, the child's teacher, and one of the child's parents. Each of these respondents was asked to rate the presence or absence of 32 personality attributes. These composite personality scores are stored in a separate file:
+```{r}
+scores <- read.csv("Chinese_children_composite_scores.csv")
+```
+
+5. Calculate the correlation matrix of the four composite personality scores.  
+
+```{r}
+composites <- scores %>% select(matches("self|class|teach|parent", ignore.case=TRUE))
+cor(composites, use="pairwise.complete.obs")
+
+```
+
+6. Merge the composite personality scores with the rest of the survey data. Check to make sure that the merge was successful.  
+
+```{r}
+csc <- csc %>% left_join(scores, by = intersect(names(csc), names(scores)))
+anti_join(scores, csc, by = intersect(names(csc), names(scores))) %>% nrow()  # 0 = all matched
+
+```
+
+7. Create a long version of the merged `csc` data so that the personality composite scores are stored in one outcome variable. Be sure to appropriately name the new columns.  
+
+```{r}
+csc_long <- csc %>% pivot_longer(cols = matches("self|class|teach|parent", ignore.case=TRUE),
+                                 names_to="rater", values_to="personality_score")
+
+```
+
+8. Calculate the sample size, mean, standard deviation, minimum, and maximum for each of the four composite scales **by province** producing the results organized in one table.  
+
+```{r}
+csc_long %>% group_by(province, rater) %>%
+  summarise(n=n(), mean=mean(personality_score,na.rm=TRUE), sd=sd(personality_score,na.rm=TRUE),
+            min=min(personality_score,na.rm=TRUE), max=max(personality_score,na.rm=TRUE), .groups="drop")
+
+```
+
+9. Compare the `MATHS1` and `VERBS1` test scores between students in urban or rural settings **by province** using an independent samples ttest. Are the results consistent across the provinces?  
+
+```{r}
+tt_by <- function(v) csc %>% group_by(province) %>% reframe(tidy(t.test(reformulate("urbanicity", v), data=cur_data())))
+bind_rows(list(MATHS1=tt_by("MATHS1"), VERBS1=tt_by("VERBS1")), .id="score")
+
+
+```
+
+**Urban–rural gaps are mostly urban-advantaged. For MATHS1, Urban > Rural in Beijing (+6.9, p<.001), Guangdong (+6.2, p<.001), and Sichuan (+7.9, p<.001); while Shanghai shows no significant difference (−1.0, p=.31).
+For VERBS1, Urban > Rural in Beijing (+4.7, p<.001), Guangdong (+5.5, p<.001), and Sichuan (+6.3, p<.001), but Shanghai reverses with Rural > Urban (−2.95, p<.001).
+Overall, results are not fully consistent across provinces: the urban advantage is common, but Shanghai is an exception (no math gap; rural verbal edge).**
+
+## Preparation for Final Project
+
+10. Read through the final project guidelines posted in iCollege. Find a dataset using the criteria provided in the project guidelines. Describe where you found the dataset and how the data meet the criteria for the final project assignment. Please note that the dataset you find for this homework assignment does not have to be the data you ultimately use for the final project, but I hope that it is.  
+
+
+**Replace this text with your response.**

@@ -1,0 +1,165 @@
+---
+title: "HW 7 - Data Visualization"
+author: "DUE: Thursday, November 20 at 11:59pm"
+output: word_document
+---
+```{r include = FALSE}
+knitr::opts_chunk$set(comment = "")
+```
+
+# Purpose:
+
+In this assignment, you will clean and visualize data from the State of the City polling data. As part of data preparation for graphics in R, categorical data need to be formatted as factor data with appropriate and informative labels. Furthermore, the data may need to be reshaped in order to be used by functions within the `ggplot2` package. In developing your visualizations, you should follow the principles of good statistical graphics by ensuring that:
+
+* Axes, legends, and titles always have clear and sensible labels
+* The axes have sensible ranges and scales
+* It is easy to make comparisons between relevant quantities
+  + Categories to be compared should be close to each other
+  + Proportions rather than counts should be compared when subgroups are not the same size
+
+# Task:
+
+The following are the activities you will accomplish as you work through this assignment.
+
+* Create subsets of the data and factor variables with appropriate category labels
+* Produce a statistical graphic using one variable
+* Reshape a dataset
+* Calculate proportional responses across groups
+* Create a plot that compares responses across multiple survey questions
+* Interpret data visualizations
+
+# Criteria for Success:
+
+This assignment is worth a total of **100 points** (10% of your overall grade).
+
+Review the answers posted to the previous class exercises, especially the Topic 12 class exercises. Use the strategies and lessons learned during the class exercises to inform how to develop your code for this assignment.
+
+Follow the consistency guidelines and naming conventions. There are many ways to accomplish any given task, so checking your answers is critical. Lastly, review my feedback once this assignment is graded and use it on the project assignment.
+
+***
+
+## State of the City Polling
+
+This assignment involves a dataset that we have seen in previous classes. I have saved the relevant data and its codebook in an .RData file, which is loaded as follows:
+```{r}
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+
+load("state_of_the_city_poll_data.RData")
+```
+
+We will be working with question 18 which starts with the stem “Please tell me what impact you think each of the following changes would have on improving the quality of public education in your community.” Refer to the codebook for what parts a through d of question 18 ask about. The responses were coded so that 1 = “Better”, 2 = “About the same”, 3 = “Worse”, 8 = “Don’t know”, and 9 = “Refused”.
+
+1. Create a subset of `poll_dat` that only retains values 1 through 3 from `q18a` (i.e, the variable `q18a` should not contain any missing values).  
+
+```{r}
+poll_q18a <- subset(poll_dat, q18a %in% 1:3)
+```
+
+2. In the data subset, reformat `q18a` as a factor variable with informative labels. Please see above for how to name the labels.  
+
+```{r}
+poll_q18a <- poll_q18a %>%
+  mutate(q18a = factor(q18a,
+                       levels = c(1, 2, 3),
+                       labels = c("Better", "About the same", "Worse")))
+
+```
+
+3. Choose an appropriate type of graph that displays the distribution of responses to question 18a. Be sure to use the reformatted version of `q18a` and clean up the presentation of the axis labels in the graph. Consider adding some color to your graph, but make sure to remove the legend if it is providing duplicate information.  
+
+```{r fig.width = 3.5, fig.height = 2.5}
+ggplot(poll_q18a, aes(x = q18a, fill = q18a)) +
+  geom_bar() +
+  labs(
+    x = "Perceived Impact",
+    y = "Count of Responses",
+    title = "Distribution of Responses to Question 18a"
+  ) +
+  theme_minimal() +
+  theme(legend.position = "none")
+
+```
+
+4. Next, let's compare the distribution of responses to each part of question 18. In order to do so, we first need to reshape `poll_dat` from wide to long format, so that responses to `q18a` through `q18d` are nested within respondents.  
+
+```{r}
+poll_long <- poll_dat %>%
+  pivot_longer(
+    cols = q18a:q18d,
+    names_to = "question",
+    values_to = "response"
+  )
+
+```
+
+5. Create a subset of the the long-formatted data that only retains values 1 through 3 from question 18.  
+
+```{r}
+poll_long_clean <- poll_long %>%
+  filter(response %in% c(1, 2, 3))
+```
+
+6. In the subset of the long-formatted data, reformat questions 18a-18d and their response values as factors with informative labels.  
+
+```{r}
+poll_long_clean <- poll_long_clean %>%
+  mutate(
+    question = factor(question,
+                      levels = c("q18a", "q18b", "q18c", "q18d"),
+                      labels = c("18a", "18b", "18c", "18d")),
+    response = factor(response,
+                      levels = c(1, 2, 3),
+                      labels = c("Better", "About the same", "Worse"))
+  )
+```
+
+7. You will be creating a figure that should make it easy to compare the respondents' views about which proposals would be effective. In order to do so, you first have to calculate the **proportional responses** across question because the number of respondents who answered each question differed. Show the resulting data frame containing one column of proportions by response for each part of question 18.  
+
+```{r}
+prop_responses <- poll_long_clean %>%
+  group_by(question, response) %>%
+  summarize(n = n(), .groups = "drop") %>%
+  group_by(question) %>%
+  mutate(prop = n / sum(n))
+
+prop_responses
+```
+
+8. Now, create the set of bar charts that displays the distribution of responses to each part of question 18. Be sure to use the data containing the **proportional responses** across question and clean up the presentation of the axis labels in the graph. Consider adding some color to your graph, but make sure to remove the legend if it is providing duplicate information.  
+
+```{r fig.width=7}
+ggplot(prop_responses,
+       aes(x = response, y = prop, fill = response)) +
+  geom_col() +
+  facet_wrap(~ question) +
+  labs(
+    x = "Response",
+    y = "Proportion",
+    title = "Proportional Responses to Question 18 (a–d)"
+  ) +
+  theme_minimal() +
+  theme(legend.position = "none")
+```
+
+9. Interpret the previous graph: Which of the proposals is most widely viewed as effective? Which is most widely viewed as detrimental?  
+
+
+Based on the bar charts, the proposal in question 18a receives the highest proportion of “About the same” responses, meaning it is viewed as the most effective improvement to public education. On the other hand, 18d has the highest proportion of “Better” responses, suggesting that respondents view it as the most effective. The other proposals have similar outcome as 18d.
+
+## Preparation for Final Project
+
+10. Read through the final project guidelines posted in iCollege. Using either the dataset you found for the last assignment or a different dataset (that still meets the criteria provided in the project guidelines), compose **two research questions**. Indicate which analytic method you will use to answer each question, and explain why the method is an appropriate choice. Please note that the research questions you develop for this assignment do not have to be the ones you ultimately use for the final project.  
+
+
+Research Question 1:
+Does income level affect whether respondents trust the local government?
+Method: Chi-square test of independence.
+Why: Both variables are categorical, and a chi-square test checks whether their distributions differ across groups.
+
+Research Question 2:
+Do people with higher education levels report higher satisfaction with public services?
+Method: One-way ANOVA.
+Why: Education level is categorical and satisfaction is numeric, so ANOVA compares the means across multiple groups.
+

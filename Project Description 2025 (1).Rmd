@@ -1,0 +1,607 @@
+---
+title: "Data Analysis Final Project"
+author: 'DUE: Thursday, December 11 at 11:59pm'
+output:
+  word_document: default
+  pdf_document: default
+---
+```{r include = FALSE}
+knitr::opts_chunk$set(comment = "")
+```
+
+
+# Purpose: Exploring Practitioner Engagement with Professional Development in Adult Education
+
+# Research Questions
+
+1. How does an AE practitioner’s role influence engagement with PD resources?
+2. How does an AE practitioner’s years of experience influence engagement with PD resources?
+
+
+The final project involves completing a small data analysis based on a topic and dataset of your own choosing. Data may be obtained in various places, but do not select a dataset that would require you to seek IRB approval for use in this project. The goal of the project is to demonstrate your ability to organize and complete a full data analysis, from reading in the data to presenting the results. Completed projects will be assessed based on the extent to which they demonstrate competence in importing, cleaning & processing, visualizing, and analyzing a real-life dataset. Some suggestions for those seeking data for the project include https://www.icpsr.umich.edu/web/pages/ICPSR/index.html, https://nces.ed.gov, https://www.census.gov/data.html, https://dataverse.harvard.edu/, and https://edopportunity.org/get-the-data/. These are but a few suggestions. 
+
+# Task:
+
+The following are the activities you will accomplish as you work through this assignment.
+
+•	Find a dataset that contains at least 100 observations and 10 variables (i.e., enough data and variables to conduct the analyses to answer your research questions). The data should also contain a mix of continuous and categorical variables.
+–	You can use data available from your advisor ***(with permission)***
+•	Import the data
+•	Conduct data verification analyses (missing values; invalid values; etc.)
+•	Provide descriptive statistics of cases that will be included in your analysis and contrast that with observations (cases) excluded from your analysis
+•	Compose research questions that can be answered using a t-test, chi-square test, correlation test, ANOVA, linear regression analysis, binary logistic regression analysis, or other analytic method of your choice
+•	Provide some theoretical rationale that motivates your hypotheses
+•	Identify appropriate variables for the analysis
+•	Create and interpret at least three figures that will help the reader understand your data
+•	Analyze and report the results of your analysis
+–	Check assumptions/diagnostics for your analysis
+–	It’s okay if you violate some of the assumptions, as long as you consider that in your conclusions
+•	Interpret your results (place the results in context)
+•	Deliver a ‘mini-presentation’ on your project on the selected date
+–	Dates to be selected at our 9/23 class meeting for the four dates specified in the syllabus for presentations. Three presentations will occur each week. Presentations should be no more than six minutes with four minutes for questions/comments from course participants. 
+
+
+# Criteria for Success:
+
+This assignment is worth a total of **200 points** (20% of your overall grade).
+
+Be sure to address all required components in task list above. Thoroughly describe the data source, including the variables used in the analysis. Conclusions should be expressed clearly with correct usage of statistical vocabulary. As always, follow the code consistency guidelines and naming conventions. There are many ways to accomplish any given task, so checking your work is critical.
+
+***
+
+1. Describe in a paragraph where you found the dataset, how the data were collected, and what information the dataset contains.  
+
+**Replace this text with your response.**
+
+2. Identify two to three fairly specific research hypotheses that you plan to investigate. 
+
+**Replace this text with your response.**
+
+3. Explain what statistical test will be utilized to answer each hypothesis.
+
+**Replace this text with your response.**
+
+4. Briefly explain how each research hypothesis is motivated by a theoretical framework that predicts the relationship being tested in your analysis.  
+
+**Replace this text with your response.**
+
+5. Note the names of the variables that you plan to use to address the hypotheses you identified or will use to provide context about your data. You should identify at least six variables - a mix of continuous and categorical variables.  
+
+**Replace this text with your response.**
+
+6. Read the data into R.  
+
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(message = FALSE, warning = FALSE)
+library(readxl)
+library(dplyr)
+library(janitor)
+library(ggplot2)
+
+
+# read Excel file (change the file name/path to your actual file)
+ae_raw <- read_excel("Survey of AE Practitioners 3.4.23.xlsx")
+
+# clean column names to be simple and R-friendly
+ae <- ae_raw |> 
+  clean_names()
+
+# quick look at variable names
+names(ae)[1:20]
+
+```
+
+7. Develop R code to process the raw data for **each continuous variable** (from the list of variables you identified in Question 3). Ensure that missing values are properly coded as well as check for any gross outliers or values that don't make sense. Finally, provide descriptive statistics such as the mean, min, max, standard deviation, and sample size to demonstrate that the data is ready for analysis. Provide information separately for cases that will be excluded from your analysis.   
+
+```{r}
+
+
+library(dplyr)
+
+## 1. PD engagement count -----------------------------------------------------
+
+pd_vars <- c(
+  "professional_conferences",
+  "you_tube",
+  "instagram_whats_app_facebook_others",
+  "scholarly_professional_journals",
+  "colleagues",
+  "others"
+)
+
+# optional sanity check
+intersect(pd_vars, names(ae))
+
+ae <- ae |>
+  mutate(
+    # make sure PD variables are numeric 0/1 (handles factors/characters)
+    across(
+      any_of(pd_vars),               # <-- any_of avoids the "don't exist" error
+      ~ as.numeric(as.character(.))
+    ),
+    pd_count = rowSums(across(any_of(pd_vars)), na.rm = TRUE)
+  )
+
+## 2. Select key continuous variables ----------------------------------------
+
+continuous_vars <- c(
+  "pd_count",
+  "years_of_experience",
+  "how_many_adult_learners_are_served_by_your_program_annually",
+  "how_many_adult_learners_do_you_personally_work_with_on_an_annual_basis"
+)
+
+# row id
+ae <- ae |>
+  mutate(row_id = row_number())
+
+# analysis sample flag
+ae <- ae |>
+  mutate(
+    in_analysis = if_else(
+      !is.na(roles) &
+        !is.na(years_of_experience) &
+        !is.na(pd_count),
+      "included", "excluded"
+    )
+  )
+
+## 3. Simple descriptives function -------------------------------------------
+
+desc_one <- function(x) {
+  c(
+    n    = sum(!is.na(x)),
+    mean = mean(x, na.rm = TRUE),
+    sd   = sd(x, na.rm = TRUE),
+    min  = min(x, na.rm = TRUE),
+    max  = max(x, na.rm = TRUE)
+  )
+}
+
+## 4. Descriptives for each continuous variable, by inclusion status ----------
+
+cont_desc <- ae |>
+  group_by(in_analysis) |>
+  summarise(
+    across(all_of(continuous_vars), desc_one, .names = "{.col}_{.fn}"),
+    .groups = "drop"
+  )
+
+cont_desc
+
+
+```
+
+8. Develop R code to process the raw data for **each categorical variable** (from the list of variables you identified in Question 3). Ensure that the variable is coded as a factor, that the categories have reasonable labels, and that missing values are properly coded. Consider whether you will need to combine levels of the variable that occur infrequently. Provide a table of frequency counts for each level of the variable(s).  Provide information separately for cases that will be excluded from your analysis.   
+
+```{r}
+suppressWarnings(library(haven))
+library(dplyr)
+
+# 1. Convert key variables to factors ----------------------------------------
+ae <- ae |>
+  mutate(
+    role         = factor(roles),
+    paid_status  = factor(position_paid_or_volunteer),
+    wioa_funding = factor(does_your_program_receive_wioa_funding)
+  )
+
+# 2. Find ALL conference columns automatically -------------------------------
+#    (after clean_names() they will all contain "conference")
+conf_cols <- ae |>
+  select(contains("conference")) |>
+  names()
+
+# sanity check
+print(conf_cols)
+
+# 3. Make conference columns numeric and create conf_any ---------------------
+ae <- ae |>
+  mutate(
+    # coerce all conference columns to numeric (handles factors/characters)
+    across(
+      all_of(conf_cols),
+      ~ as.numeric(as.character(.))
+    ),
+    # total number of conferences attended
+    conf_n = rowSums(across(all_of(conf_cols)), na.rm = TRUE),
+    # attended at least one? Yes/No
+    conf_any = factor(if_else(conf_n > 0, "Yes", "No"))
+  )
+
+# 4. Frequency tables by inclusion status ------------------------------------
+ae |>
+  count(in_analysis, role)
+
+ae |>
+  count(in_analysis, conf_any)
+
+ae |>
+  count(in_analysis, wioa_funding)
+
+ae |>
+  count(in_analysis, paid_status)
+
+
+```
+
+9. Create at least three visualizations of your data using a function from the `ggplot2` package or other visualization function. Be sure to appropriately label all axes, legends, and titles. The axes should have sensible ranges and scales. Be sure it is easy to make comparisons between relevant quantities (e.g., categories to be compared should be close to each other).  
+
+```{r}
+suppressWarnings(library(haven))
+
+library(dplyr)
+library(ggplot2)
+library(knitr)   # for kable()
+
+# ---- Create analysis dataset with factors & logged vars ----
+ae_inc <- ae |>
+  filter(in_analysis == "included") |>
+  mutate(
+    # role as labeled factor
+    role = factor(
+      roles,
+      levels = c(1, 2, 3, 4, 5),
+      labels = c(
+        "Teacher",
+        "Administrator",
+        "Tutor",
+        "Administrative/Program Support",
+        "Other"
+      )
+    ),
+    # years of experience as labeled factor (1–8 codes)
+    years_cat = factor(
+      years_of_experience,
+      levels = c(1, 2, 3, 4, 5, 6, 7, 8),
+      labels = c(
+        "0-1 years",
+        "1-5 years",
+        "6-10 years",
+        "11-15 years",
+        "16-20 years",
+        "21-25 years",
+        "26-30 years",
+        "More than 30 years"
+      )
+    ),
+    # logged continuous variables
+    log_pd_count    = log(pd_count + 1),
+    log_experience  = log(years_of_experience + 1)
+  )
+
+# Optional: nice table of years of experience categories
+ae_inc |>
+  count(years_cat) |>
+  kable(caption = "Years of Experience Categories")
+
+# ---- 1. Histogram of PD Engagement (Log-Scaled) ----
+ggplot(ae_inc, aes(x = log_pd_count)) +
+  geom_histogram(binwidth = 0.25, fill = "#2C7BB6", color = "white") +
+  labs(
+    title = "Distribution of Logged PD Engagement Count",
+    x = "log(PD Engagement Count + 1)",
+    y = "Number of Practitioners"
+  ) +
+  theme_minimal(base_size = 14)
+
+# ---- 2. Boxplot of PD Engagement by Role ----
+ggplot(ae_inc, aes(x = role, y = log_pd_count, fill = role)) +
+  geom_boxplot(alpha = 0.8, color = "black") +
+  scale_fill_brewer(palette = "Set3") +
+  labs(
+    title = "Logged PD Engagement by Practitioner Role",
+    x = "Practitioner Role",
+    y = "log(PD Engagement Count + 1)"
+  ) +
+  theme_minimal(base_size = 14) +
+  theme(
+    legend.position = "none",
+    axis.text.x = element_text(angle = 45, hjust = 1)
+  )
+
+# ---- 3. Scatterplot with Logged Variables ----
+ggplot(ae_inc, aes(x = log_experience, y = log_pd_count)) +
+  geom_point(alpha = 0.7, color = "#1B9E77", size = 3) +
+  geom_smooth(method = "lm", se = TRUE, color = "#D95F02", size = 1) +
+  labs(
+    title = "Relationship Between Experience and PD Engagement (Logged)",
+    x = "log(Years of Experience + 1)",
+    y = "log(PD Engagement Count + 1)"
+  ) +
+  theme_minimal(base_size = 14)
+
+```
+
+
+```{r fig.width=10, fig.height=8}
+
+ae_inc <- ae |> 
+  filter(in_analysis == "included") |>
+  mutate(
+    role = factor(
+      roles,
+      levels = c(1, 2, 3, 4, 5),
+      labels = c("Teacher",
+                 "Administrator",
+                 "Tutor",
+                 "Administrative/Program Support",
+                 "Other")
+    )
+  )
+
+
+ggplot(ae_inc, aes(x = role, y = pd_count, fill = role)) +
+  geom_boxplot(alpha = 0.6, color = "black") +
+  geom_jitter(width = 0.15, alpha = 0.5, size = 2, color = "gray30") +
+  scale_fill_brewer(palette = "Pastel1") +
+  labs(
+    title = "PD Engagement by Practitioner Role",
+    x = "Practitioner Role",
+    y = "PD Engagement Count"
+  ) +
+  theme_bw(base_size = 14) +
+  theme(
+    legend.position = "none",
+    plot.title = element_text(face = "bold", size = 16),
+    axis.text.x = element_text(angle = 45, hjust = 1, size = 12)
+  )
+
+
+```
+
+
+```{r fig.width=10, fig.height=8}
+
+ae_inc <- ae |> 
+  filter(in_analysis == "included") |>
+  mutate(
+    years_of_experience = factor(
+      years_of_experience, 
+      levels = c(1, 2, 3, 4, 5, 6, 7, 8),
+      labels = c("0-1 years", 
+                 "1-5 years", 
+                 "6-10 years", 
+                 "11-15 years",
+                 "16-20 years",
+                 "21-25 years",
+                 "26-30 years",
+                 "More than 30 years")
+    )
+  )
+
+
+ggplot(ae_inc, aes(x = years_of_experience, y = pd_count, fill = role)) +
+  geom_boxplot(alpha = 0.6, color = "black") +
+  geom_jitter(width = 0.15, alpha = 0.5, size = 2, color = "gray30") +
+  scale_fill_brewer(palette = "Pastel1") +
+  labs(
+    title = "PD Engagement by Years of Experience",
+    x = "years_of_experience",
+    y = "PD Engagement Count"
+  ) +
+  theme_bw(base_size = 14) +
+  theme(
+    legend.position = "none",
+    plot.title = element_text(face = "bold", size = 16),
+    axis.text.x = element_text(angle = 45, hjust = 1, size = 12)
+  )
+
+
+```
+
+
+```{r}
+
+ae_inc <- ae |> 
+  filter(in_analysis == "included") |>
+  mutate(
+    years_of_experience = factor(
+      years_of_experience, 
+      levels = c(1, 2, 3, 4, 5, 6, 7, 8),
+      labels = c("0-1 years", 
+                 "1-5 years", 
+                 "6-10 years", 
+                 "11-15 years",
+                 "16-20 years",
+                 "21-25 years",
+                 "26-30 years",
+                 "More than 30 years")
+    )
+  )
+# Bar chart of Practitioner Role
+ggplot(ae_inc, aes(x = years_of_experience)) +
+  geom_bar(fill = "#2C7BB6", color = "black") +
+  labs(
+    title = "Years of Experience",
+    x = "years_of_experience",
+    y = "Count of years"
+  ) +
+  theme_minimal(base_size = 14) +
+  theme(
+    axis.text.x = element_text(angle = 35, hjust = 1)
+  )
+```
+```{r}
+#library(ggplot2)
+ae_inc <- ae |>
+  filter(in_analysis == "included") |>
+  mutate(
+    position_paid_or_volunteer = factor(
+      position_paid_or_volunteer,
+      levels = c(1, 2),
+      labels = c("Paid",
+                 "Unpaid/Volunteer"
+                 )
+    )
+  )
+
+# Bar chart of Practitioner Role
+ggplot(ae_inc, aes(x = position_paid_or_volunteer)) +
+  geom_bar(fill = "#2C7BB6", color = "black") +
+  labs(
+    title = "Number of Practitioners by Role",
+    x = "position_paid_or_volunteer",
+    y = "Count of Paid Volunteer"
+  ) +
+  theme_minimal(base_size = 14) +
+  theme(
+    axis.text.x = element_text(angle = 35, hjust = 1)
+  )
+```
+
+
+
+```{r}
+#library(ggplot2)
+ae_inc <- ae |>
+  filter(in_analysis == "included") |>
+  mutate(
+    role = factor(
+      roles,
+      levels = c(1, 2, 3, 4, 5),
+      labels = c("Teacher",
+                 "Administrator",
+                 "Tutor",
+                 "Administrative/Program Support",
+                 "Other")
+    )
+  )
+
+# Bar chart of Practitioner Role
+ggplot(ae_inc, aes(x = role)) +
+  geom_bar(fill = "#2C7BB6", color = "black") +
+  labs(
+    title = "Number of Practitioners by Role",
+    x = "Practitioner Role",
+    y = "Count of Practitioners"
+  ) +
+  theme_minimal(base_size = 14) +
+  theme(
+    axis.text.x = element_text(angle = 35, hjust = 1)
+  )
+
+```
+
+```{r}
+ae_inc <- ae_inc |>
+  mutate(
+    pd_group = cut(
+      pd_count,
+      breaks = c(-Inf, 2, 4, Inf),
+      labels = c("Low (0–2)", "Medium (3–4)", "High (5+)")
+    )
+  )
+
+role_pd_group_table <- table(ae_inc$role, ae_inc$pd_group)
+
+role_pd_group_table
+
+
+```
+```{r}
+ae_inc <- ae_inc |>
+  mutate(
+    pd_group = cut(
+      pd_count,
+      breaks = c(-Inf, 1, 3, 5, Inf),
+      labels = c("Very low (0–1)",
+                 "Low (2–3)",
+                 "Moderate (4–5)",
+                 "High (6+)")
+    )
+  )
+ggplot(ae_inc, aes(x = role, fill = pd_group)) +
+  geom_bar(position = "fill", color = "black") +
+  scale_y_continuous(labels = scales::percent) +
+  scale_fill_brewer(palette = "Set2", name = "PD Engagement") +
+  labs(
+    title = "PD Engagement Category by Practitioner Role",
+    x = "Practitioner Role",
+    y = "Proportion of Practitioners"
+  ) +
+  theme_minimal(base_size = 14) +
+  theme(
+    plot.title = element_text(face = "bold", size = 16),
+    axis.text.x = element_text(angle = 30, hjust = 1)
+  )
+geom_bar(position = "dodge")
+
+
+```
+
+10. Write a few sentences interpreting each figure from the previous question.  
+
+**Replace this text with your response.**
+
+11. Run your analysis and report the results.  
+
+```{r}
+knitr::opts_chunk$set(message = FALSE, warning = FALSE)
+
+# keep only included cases with complete data for main variables
+ae_model <- ae_inc |>
+  filter(!is.na(pd_count),
+         !is.na(years_of_experience),
+         !is.na(role),
+         !is.na(conf_any))
+
+# H1: One-way ANOVA - PD engagement by role
+anova_model <- aov(pd_count ~ role, data = ae_model)
+summary(anova_model)
+
+# optional post-hoc comparisons
+TukeyHSD(anova_model)
+
+# H2: Linear regression - PD engagement on years of experience
+lm_model <- lm(pd_count ~ years_of_experience, data = ae_model)
+summary(lm_model)
+
+
+library(haven)
+
+ae_model <- ae_model |>
+  mutate(
+    years_of_experience = as.numeric(zap_labels(years_of_experience)),
+    pd_count = as.numeric(zap_labels(pd_count))
+  )
+# (optional) correlation
+cor.test(ae_model$years_of_experience, ae_model$pd_count)
+
+# H3: t-test - conferences vs no conferences
+t.test(pd_count ~ conf_any, data = ae_model)
+
+```
+
+**Provide a narrative to accompany your results**
+
+12. Check assumptions and/or diagnostics of the analysis. Present graphical and/or numerical evidence, and briefly describe what this evidence is indicating.  
+
+```{r}
+# diagnostics for ANOVA (equivalent to linear model with categorical predictor)
+par(mfrow = c(2, 2))
+plot(anova_model)   # residuals vs fitted, QQ-plot, etc.
+
+# diagnostics for regression model
+par(mfrow = c(2, 2))
+plot(lm_model)
+
+# reset plotting layout
+par(mfrow = c(1, 1))
+
+# check normality of residuals explicitly
+shapiro.test(residuals(lm_model))
+
+# check homogeneity of variance for ANOVA (Levene-like test using car package if available)
+# install.packages("car") # run once if needed
+library(car)
+leveneTest(pd_count ~ role, data = ae_model)
+
+```
+
+**Replace this text with your response.**
+
+13. Lastly, write a paragraph summarizing your findings, being mindful to consider the assumptions previously checked when you interpreted the analytic results. How should a reader interpret your results? It may be useful to consider question 12, the precision of your results, and the internal and external validity of your results.    
+
+**Replace this text with your response.**
